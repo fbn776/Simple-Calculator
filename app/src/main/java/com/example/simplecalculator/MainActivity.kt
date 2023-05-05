@@ -43,6 +43,11 @@ class MainActivity : AppCompatActivity() {
 
         for(key in keys) {
             key.setOnClickListener {
+                val currTxt = resultScreen.text.toString()
+                if("Error" in currTxt) {
+                    resultScreen.text = ""
+                }
+
                 resultScreen.text = (resultScreen.text.toString() + key.text.toString())
                 //For auto scrolling to the end, when inputing
                 horizontalScrollView.post {
@@ -54,9 +59,14 @@ class MainActivity : AppCompatActivity() {
         //For deleting last entry;
         delKey.setOnClickListener {
             val currTxt = resultScreen.text.toString()
-            if(currTxt != "") {
-                //Remove the last character and the assign it to the new result text;
-                resultScreen.text = currTxt.substring(0, currTxt.length - 1)
+            //If ites `Error` then clear the display
+            if("Error" in currTxt) {
+                resultScreen.text = ""
+            }else {
+                if (currTxt != "") {
+                    //Remove the last character and the assign it to the new result text;
+                    resultScreen.text = currTxt.substring(0, currTxt.length - 1)
+                }
             }
         }
 
@@ -67,14 +77,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         equalKey.setOnClickListener {
-            Log.d("1234567890", "------------------")
-            Log.d("1234567890", resultScreen.text.toString())
             val screenContent: Queue<Char> = Queue<Char>()
             screenContent.pushAll(*(resultScreen.text.toString().toCharArray().toTypedArray()))
-            Log.d("1234567890", screenContent.toString())
             val infixNot = InfixNotation().convert(screenContent)
-            Log.d("1234567890", infixNot.result.toString())
-            Log.d("1234567890", "------------------")
 
             if(infixNot.hasDecimalError || infixNot.hasOperatorError || infixNot.hasInvalidCharError) {
                 resultScreen.text = "Error"
